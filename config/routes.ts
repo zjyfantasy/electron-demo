@@ -53,6 +53,7 @@
                     authority: ['admin'],
                   },
                 ],
+                hideInMenu:true,
               },
               {
                 name: 'list.table-list',
