@@ -17,7 +17,6 @@ export default {
   effects: {
     *queryList({ payload }, { select, call, put }) {
       const pagination = yield select(({ album }) => album.pagination);
-
       const response = yield call(queryImagesList);
       yield put({
         type: 'save',
@@ -33,7 +32,7 @@ export default {
     },
     *getFile({ payload }, { select, call, put }) {
       const response = yield call(getFile, payload);
-      if (response.commit.sha) {
+      if (response?.sha) {
         yield put({
           type: 'save',
           payload: {
@@ -49,7 +48,7 @@ export default {
     },
     *deleteFile({ payload }, { select, call, put }) {
       const response = yield call(deleteFile, payload);
-      if (response.commit.sha) {
+      if (response?.commit?.sha) {
         message.success('删除成功');
         yield put({
           type: 'queryList',
@@ -62,7 +61,7 @@ export default {
     },
     *upload({ payload }, { select, call, put }) {
       const response = yield call(upload, payload);
-      if (response.commit.sha) {
+      if (response?.commit?.sha) {
         message.success('上传成功！');
       } else {
         message.error('上传失败！');

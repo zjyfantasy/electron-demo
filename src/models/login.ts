@@ -36,12 +36,12 @@ const Model: LoginModelType = {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
       console.log(response);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
       if (response?.status === 'ok') {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         message.success('🎉 🎉 🎉  登录成功！');
@@ -68,6 +68,11 @@ const Model: LoginModelType = {
     },
 
     logout() {
+      const remember = localStorage.getItem('remember');
+      if (['undefined', 'false'].includes(remember)) {
+        console.log('清除localStorage');
+        localStorage.clear();
+      }
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
@@ -84,6 +89,7 @@ const Model: LoginModelType = {
   reducers: {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
+      localStorage.setItem('token', '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');
       localStorage.setItem('userInfo', JSON.stringify(payload));
       return {
         ...state,

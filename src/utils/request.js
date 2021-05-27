@@ -1,6 +1,7 @@
 /** Request 网络请求工具 更详细的 api 文档: https://github.com/umijs/umi-request */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { history } from 'umi';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -29,7 +30,17 @@ const errorHandler = (error) => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-
+    if (status === 401) {
+      notification.error({
+        message: `Request error ${status}: ${url}`,
+        description: errorText,
+        duration: 2,
+        onClose: () => {
+          history.push('/user/login');
+        },
+      });
+      return;
+    }
     notification.error({
       message: `Request error ${status}: ${url}`,
       description: errorText,
