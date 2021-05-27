@@ -15,28 +15,41 @@ export default {
   },
   subscriptions: {},
   effects: {
-    *queryList({ payload }, { select, call, put }) {
+    *queryList({ payload = {} }, { select, call, put }) {
       const pagination = yield select(({ album }) => album.pagination);
       const response = yield call(queryImagesList);
+      const { fileName, sha } = payload;
+      let res = [];
+      if (fileName) {
+        if (sha) {
+          res = response.filter((item) => item.name.includes(fileName) && item.sha === sha);
+        } else {
+          res = response.filter((item) => item.name.includes(fileName));
+        }
+      } else if (sha) {
+        res = response.filter((item) => item.sha === sha);
+      } else {
+        res = response;
+      }
       yield put({
         type: 'save',
         payload: {
-          imageList: response,
+          imageList: res,
           pagination: {
             ...pagination,
-            total: response?.length,
+            total: res?.length,
           },
         },
       });
-      return response;
+      return res;
     },
     *getFile({ payload }, { select, call, put }) {
-      const response = yield call(getFile, payload);
+      const response = yield call(getFile, payload.sha);
       if (response?.sha) {
         yield put({
           type: 'save',
           payload: {
-            imageData: response,
+            imageData: Object.assign({}, response, { name: payload.name }),
             showImgModal: true,
           },
         });

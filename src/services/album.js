@@ -10,8 +10,8 @@ export async function queryImagesList(planId) {
   });
 }
 
-export async function getFile(url) {
-  return await request(url, { prefix: '' });
+export async function getFile(sha) {
+  return await request(`https://api.github.com/repos/zjyfantasy/myalbum/git/blobs/${sha}`, { prefix: '' });
 }
 
 export async function upload(params) {

@@ -28,11 +28,10 @@ const Index = ({ dispatch, imageList, imageData, showImgModal, loading, paginati
     });
   }, []);
 
-  console.log(imageList, imageData);
   const handleView = (item) => {
     dispatch({
       type: 'album/getFile',
-      payload: item.url,
+      payload: item,
     });
   };
 
@@ -109,36 +108,49 @@ const Index = ({ dispatch, imageList, imageData, showImgModal, loading, paginati
   };
 
   const handleUpload = () => {
-    history.push('/upload')
-  }
+    history.push('/album/upload');
+  };
 
+  const onFinish = (values) => {
+    console.log(values);
+    dispatch({
+      type: 'album/queryList',
+      payload: values,
+    });
+  };
   return (
     <PageContainer
       loading={loading}
       header={{
-        extra: <Button type="primary" onClick={handleUpload}>上传</Button>,
+        extra: (
+          <Button type="primary" onClick={handleUpload}>
+            上传
+          </Button>
+        ),
       }}
     >
-      <Form {...formItemLayout} layout="horizontal" form={form}>
+      <Form {...formItemLayout} layout="horizontal" form={form} onFinish={onFinish}>
         <Row>
           <Col span={8}>
-            <Form.Item label="Field A">
-              <Input placeholder="input placeholder" />
+            <Form.Item name="fileName" label="文件名">
+              <Input placeholder="" />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Field B">
-              <Input placeholder="input placeholder" />
+            <Form.Item name="sha" label="sha">
+              <Input placeholder="" />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item>
-              <Button type="primary">Submit</Button>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
             </Form.Item>
           </Col>
         </Row>
       </Form>
-      <Table pagination={pagination} columns={columns} dataSource={imageList} />
+      <Table columns={columns} dataSource={imageList} />
       <Modal
         className={styles.modal}
         title={imageData.name}
@@ -153,7 +165,7 @@ const Index = ({ dispatch, imageList, imageData, showImgModal, loading, paginati
 };
 
 export default connect(({ loading, album }) => ({
-  loading: loading.effects['album/queryList'],
+  loading: loading.models.album,
   imageList: album.imageList,
   imageData: album.imageData,
   showImgModal: album.showImgModal,
