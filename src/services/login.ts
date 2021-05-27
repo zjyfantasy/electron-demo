@@ -1,7 +1,8 @@
 import request from '@/utils/request';
+import { waitTime } from '@/utils/utils';
 
 export type LoginParamsType = {
-  userName: string;
+  username: string;
   password: string;
   mobile: string;
   captcha: string;
@@ -13,18 +14,19 @@ export async function fakeAccountLogin(params: LoginParamsType) {
   //   method: 'POST',
   //   data: params,
   // });
-  const { password, userName, type } = params;
-  if (password === 'ant.design' && userName === 'admin') {
-    return Promise.resolve({ status: 'ok', type, currentAuthority: 'admin' });
+  await waitTime(2000);
+  const { password, username, type } = params;
+  if (password === 'ant.design' && username === 'admin') {
+    return { status: 'ok', type, currentAuthority: 'admin' };
   }
-  if (password === 'ant.design' && userName === 'user') {
-    return Promise.resolve({
+  if (password === 'ant.design' && username === 'user') {
+    return {
       status: 'ok',
       type,
       currentAuthority: 'user',
-    });
+    };
   }
-  return Promise.reject({ status: 'error', message: '账号密码错误' });
+  return { status: 'error', message: '账号或密码错误' };
 }
 
 export async function getFakeCaptcha(mobile: string) {

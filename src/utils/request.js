@@ -2,7 +2,7 @@
 import { extend } from 'umi-request';
 import { notification } from 'antd';
 
-const codeMessage: Record<number, string> = {
+const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
   202: '一个请求已经进入后台排队（异步任务）。',
@@ -24,7 +24,7 @@ const codeMessage: Record<number, string> = {
  * @zh-CN 异常处理程序
  * @en-US Exception handler
  */
-const errorHandler = (error: { response: Response }): Response => {
+const errorHandler = (error) => {
   const { response } = error;
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
@@ -49,7 +49,23 @@ const errorHandler = (error: { response: Response }): Response => {
  */
 const request = extend({
   errorHandler, // default error handling
-  credentials: 'include', // Does the default request bring cookies
+  // credentials: 'include', // Does the default request bring cookies
+  prefix: BASE_URL,
+});
+
+// request拦截器, 改变url 或 options.
+request.interceptors.request.use((url, options) => {
+  const token = localStorage.getItem('token');
+  return {
+    url,
+    options: {
+      ...options,
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        Authorization: `token ${token}`,
+      },
+    },
+  };
 });
 
 export default request;

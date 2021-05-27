@@ -49,4 +49,8 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+  'menu.earth': '地球',
+  'menu.album': '相册',
+  'menu.album.album': '列表',
+  'menu.album.upload': '上传',
 };

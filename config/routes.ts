@@ -5,7 +5,7 @@
     routes: [
       {
         path: '/user',
-        component: '../layouts/UserLayout',
+        // component: '../layouts/UserLayout',
         routes: [
           {
             name: 'login',
@@ -13,16 +13,6 @@
             component: './User/login',
           },
         ],
-      },
-      {
-        path: '/earth',
-        name: 'earth',
-        component: './Earth',
-      },
-      {
-        path: '/webview',
-        name: 'webview',
-        component: './WebView',
       },
       {
         path: '/',
@@ -35,7 +25,12 @@
             routes: [
               {
                 path: '/',
-                redirect: '/webview',
+                redirect: '/welcome',
+              },
+              {
+                path: '/earth',
+                name: 'earth',
+                component: './Earth',
               },
               {
                 path: '/welcome',
@@ -64,6 +59,28 @@
                 icon: 'table',
                 path: '/list',
                 component: './TableList',
+                hideInMenu:true,
+              },
+              {
+                name: 'album',
+                icon: 'table',
+                path: '/album',
+                routes: [
+                  {
+                    name: 'album',
+                    path: '/album/index',
+                    icon: 'smile',
+                    component: './Album',
+                    exact: true
+                  },
+                  {
+                    name: 'upload',
+                    path: '/album/upload',
+                    icon: 'smile',
+                    component: './Album/Upload',
+                    exact: true
+                  },
+                ],
               },
               {
                 component: './404',
