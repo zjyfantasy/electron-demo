@@ -63,6 +63,12 @@
                 hideInMenu:true,
               },
               {
+                name: 'editor',
+                icon: 'table',
+                path: '/editor',
+                component: './Editor',
+              },
+              {
                 name: 'album',
                 icon: 'table',
                 path: '/album',

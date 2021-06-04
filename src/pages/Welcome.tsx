@@ -57,6 +57,10 @@ export default (): React.ReactNode => {
           </a>
         </Typography.Text>
         <CodePreview>yarn add @ant-design/pro-layout</CodePreview>
+        <Typography.Text style={{ width: 100 }} ellipsis={{ tooltip: 'I am ellipsis now!' }}>
+          Ant Design, a design language for background applications, is refined by Ant UED Team.
+        </Typography.Text>
+
       </Card>
     </PageContainer>
   );

@@ -66,7 +66,8 @@ const request = extend({
 
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use((url, options) => {
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
+  const token = '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'
   return {
     url,
     options: {

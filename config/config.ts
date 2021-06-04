@@ -1,10 +1,19 @@
 // https://umijs.org/config/
 import { defineConfig } from 'umi';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
 const { REACT_APP_ENV } = process.env;
+
+const chainWebpack = (config, { webpack }) => {
+  config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+    {
+      languages: ['javascript', 'css', 'html', 'typescript', 'json'],
+    },
+  ]);
+};
 
 export default defineConfig({
   hash: true,
@@ -54,4 +63,5 @@ export default defineConfig({
     { from: 'node_modules/cesium/Build/Cesium/Assets', to: 'Assets' },
     { from: 'node_modules/cesium/Build/Cesium/Widgets', to: 'Widgets' },
   ],
+  chainWebpack,
 });
