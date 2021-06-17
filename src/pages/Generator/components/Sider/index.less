@@ -1,0 +1,25 @@
+:global {
+  .dragging {
+    border: 1px dashed #000;
+  }
+  .react-beatiful-dnd-copy {
+    padding: 12px;
+    margin-bottom: 5px;
+    background: lightblue;
+  }
+  /*消除拖拽元素下方变形*/
+  .react-beatiful-dnd-copy ~ div {
+    transform: none !important;
+  }
+  /*消除拖拽元素列表尾部变形*/
+  .react-beatiful-dnd-copy ~ [data-rbd-placeholder-context-id] {
+    display: none !important;
+  }
+}
+
+.listItem {
+  text-align: center;
+  padding: 12px;
+  margin-bottom: 5px;
+  background: rgb(128, 187, 174);
+}

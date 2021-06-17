@@ -1,8 +1,38 @@
 @import '~antd/lib/style/themes/default.less';
 
-.pre {
-  margin: 12px 0;
-  padding: 12px 20px;
-  background: @input-bg;
-  box-shadow: @card-shadow;
+:global {
+  .sortable-drag {
+    border: 1px dashed #000 !important;
+  }
+  .sortable-chosen {
+    border: 1px dashed #000 !important;
+  }
 }
+
+.card {
+  :global {
+    .ant-card-body {
+      display: flex;
+    }
+  }
+  .list {
+    width: 200px;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+  .listItem {
+    margin: 5px;
+    padding: 10px;
+    // background-color: rgb(109, 145, 95);
+    border: 1px solid #ccc;
+  }
+  .container {
+    flex: 1;
+    border: 1px solid #ccc;
+  }
+  .iframe {
+    width: 100%;
+    border: 1px solid #000;
+  }
+}
+

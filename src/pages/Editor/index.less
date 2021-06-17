@@ -12,3 +12,35 @@
   width: 100%;
   border: 1px solid #000;
 }
+:global {
+  #preview {
+    height: 500px;
+    border: 1px solid #000;
+  }
+}
+
+.card {
+  height: 100px;
+  background: #ff7875;
+}
+
+.gridLayout {
+  background-color: bisque;
+  :global {
+    .a {
+      background-color: #fff;
+    }
+    .b {
+      background-color: rgb(209, 236, 164);
+    }
+    .c {
+      background-color: rgb(164, 213, 236);
+    }
+  }
+}
+:global{
+  .react-resizable {
+    background-color: #ccc;
+  }
+}
+

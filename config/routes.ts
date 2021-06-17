@@ -15,6 +15,21 @@
         ],
       },
       {
+        path: '/example',
+        name: 'example',
+        component: './Example',
+      },
+      {
+        path: '/sortable',
+        name: 'sortable',
+        component: './ReactSortable',
+      },
+      {
+        path: '/generator',
+        name: 'generator',
+        component: './Generator',
+      },
+      {
         path: '/',
         component: '../layouts/SecurityLayout',
         routes: [
@@ -53,14 +68,14 @@
                     authority: ['admin'],
                   },
                 ],
-                hideInMenu:true,
+                hideInMenu: true,
               },
               {
                 name: 'list.table-list',
                 icon: 'table',
                 path: '/list',
                 component: './TableList',
-                hideInMenu:true,
+                hideInMenu: true,
               },
               {
                 name: 'editor',
@@ -72,20 +87,21 @@
                 name: 'album',
                 icon: 'table',
                 path: '/album',
+                hideInMenu: true,
                 routes: [
                   {
                     name: 'album',
                     path: '/album/index',
                     icon: 'smile',
                     component: './Album',
-                    exact: true
+                    exact: true,
                   },
                   {
                     name: 'upload',
                     path: '/album/upload',
                     icon: 'smile',
                     component: './Album/Upload',
-                    exact: true
+                    exact: true,
                   },
                 ],
               },

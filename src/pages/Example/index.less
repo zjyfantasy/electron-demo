@@ -1,0 +1,80 @@
+:global {
+  // .App {
+  //   font-family: sans-serif;
+  //   text-align: center;
+  // }
+  .ghost {
+    // background: lightblue !important;
+    opacity: 1;
+  }
+  .block{
+    // position: relative;
+    // background: white;
+    // padding: 20px;
+    // margin-bottom: 10px;
+    // border: 1px solid lightgray;
+    // border-radius: 4px;
+    cursor: move;
+    &:hover {
+      // background: #eeeeee;
+      // border: 1px dashed rgb(62, 170, 233) !important;
+    }
+  }
+  .wrap {
+    display: flex;
+    height: 100%;
+  }
+  .sortable-ghost {
+    // background-color: #000 !important;
+  }
+  .sortable-drag {
+    border: 1px dashed #000 !important;
+  }
+  .sortable-chosen {
+    border: 1px dashed #000 !important;
+  }
+  .sortable-fallback {
+    // background-color: rgb(224, 49, 58) !important;
+  }
+}
+
+.componentsWrap {
+  position: relative;
+  background: white;
+  text-align: center;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  cursor: move;
+  &:hover {
+    border: 1px dashed rgb(62, 170, 233) !important;
+  }
+}
+
+.blockWrapper {
+  // position: relative;
+  // background: white;
+  // padding: 20px;
+  // margin: 5px 0;
+  border: 1px solid #fff;
+  min-height: 20px;
+  // border-radius: 4px;
+  cursor: move;
+  &:hover {
+    //background: #eeeeee;
+    border: 1px dashed rgb(62, 170, 233) !important;
+  }
+}
+
+.left {
+  width: 200px;
+  padding: 12px;
+  border: 1px solid #ccc;
+}
+
+.right {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid rgb(123, 218, 235);
+}
