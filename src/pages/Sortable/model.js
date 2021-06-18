@@ -3,10 +3,11 @@ import { v4 as uuid } from 'uuid';
 import config, { allComponents } from './config';
 
 export default {
-  namespace: 'generator',
+  namespace: 'sortable',
   state: {
     allComponents,
     codeTree: [],
+    domStack: [],
     componentList: config,
   },
   subscriptions: {},

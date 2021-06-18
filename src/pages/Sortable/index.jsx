@@ -1,27 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography, Button } from 'antd';
+import { Card, Alert, Typography, Row, Col, Button } from 'antd';
 import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
+import j2r from 'json2react';
+import { allComponents } from './config';
+import styles from './index.less';
 
-import styles from './Welcome.less';
-
-const Index = ({ dispatch, codeTree, componentList }) => {
+const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   const [srcDoc, setSrcDoc] = useState('<div></div>');
+
   const sourceRef = useRef();
   const targetRef = useRef();
+  const previewRef = useRef();
+
+  const reactSortableOptions = {
+    animation: 150,
+    fallbackOnBody: true,
+    swapThreshold: 0.65,
+    ghostClass: 'ghost',
+    group: 'shared',
+  };
 
   const sortableOption = {
     group: 'items',
     animation: 150,
     fallbackOnBody: true,
     swapThreshold: 0.65,
-    // onSort: function (evt) {
-    //   console.log(evt);
-    // },
     onEnd: (evt) => {
       const { oldIndex, newIndex } = evt;
       if (oldIndex !== newIndex) {
@@ -29,6 +38,7 @@ const Index = ({ dispatch, codeTree, componentList }) => {
       }
     },
   };
+
   useEffect(() => {
     Sortable.create(sourceRef.current, {
       animation: 150,
@@ -39,13 +49,6 @@ const Index = ({ dispatch, codeTree, componentList }) => {
         // revertClone: true,
       },
       sort: false, // To disable sorting: set sort to false
-      // Called when creating a clone of element
-      // onClone: function (/**Event*/ evt) {
-      //   var origEl = evt.item;
-      //   var cloneEl = evt.clone;
-      //   console.log(origEl, cloneEl);
-      //   return <div>111</div>
-      // },
       onEnd: function (evt) {
         const { oldIndex, newIndex } = evt;
         resort();
@@ -55,23 +58,29 @@ const Index = ({ dispatch, codeTree, componentList }) => {
   }, []);
 
   const generator = (data = []) => {
-    const res = '';
-    data.forEach((item) => {
-      console.log(item.name);
-      if (item.children) {
-        generator(item.children);
-      } else {
-        res += item.name;
-      }
-    });
-    console.log(res);
+    // let res = [];
+    // if (data.length === 0) {
+    //   return null;
+    // } else {
+    //   data.forEach((item) => {
+    //     res.push(
+    //       React.createElement(allComponents[item.name], item.props, generator(item.children)),
+    //     );
+    //   });
+    //   return res;
+    // }
   };
+
+  useEffect(() => {
+    json2jsx();
+  }, [codeTree]);
 
   const resort = () => {
     const childNodes = Array.from(targetRef.current.childNodes);
+    let domStack = [];
     let res = [];
-    loop(childNodes, res);
-    dispatch({ type: 'generator/save', payload: { codeTree: res } });
+    loop(childNodes, res, domStack);
+    dispatch({ type: 'sortable/save', payload: { codeTree: res, domStack } });
   };
 
   // 判断占位元素
@@ -82,14 +91,20 @@ const Index = ({ dispatch, codeTree, componentList }) => {
     );
   };
   // 遍历容器节点添加可拖拽元素
-  const loop = (array, collect = []) => {
+  const loop = (array, collect = [], domStr = []) => {
     array.forEach((item) => {
       let tmp = {};
       const isMyComponent = get(item, 'attributes.data-item');
       if (isMyComponent) {
+        console.log(item.parentNode);
         // 添加属性
         const itemStr = get(item, 'attributes.data-item.nodeValue');
         const itemData = JSON.parse(itemStr);
+
+        // 构造节点
+        domStr.push(`<${itemData.name} >${itemData.name}`);
+        console.log(`<${itemData.name}>`);
+
         tmp = { ...itemData, id: uuid() };
         collect.push(tmp);
         // 容器组件
@@ -112,7 +127,7 @@ const Index = ({ dispatch, codeTree, componentList }) => {
         );
         if (validChildNodes.length) {
           tmp['children'] = [];
-          loop(validChildNodes, tmp['children']);
+          loop(validChildNodes, tmp['children'], domStr);
         } else {
         }
       } else {
@@ -122,59 +137,52 @@ const Index = ({ dispatch, codeTree, componentList }) => {
           item.childNodes.length
         ) {
           const childNodes = Array.from(item.childNodes);
-          loop(childNodes, collect);
+          loop(childNodes, collect, domStr);
         } else {
         }
+      }
+      if (isMyComponent) {
+        const itemData = JSON.parse(isMyComponent.nodeValue);
+        // domStr += `</${itemData.name}>`;
+        domStr.push(`</${itemData.name}>`);
+        console.log(`</${itemData.name}>`);
       }
     });
   };
 
-  const loop2 = (array, collect = [], trackId = 0) => {
-    array.forEach((item, index) => {
-      const parentId = uuid();
-      if (item.nodeType === 1) {
-        const isMyComponent = get(item, 'attributes.data-item');
-        if (isMyComponent) {
-          // 添加属性
-          const itemStr = get(item, 'attributes.data-item.nodeValue');
-          const itemData = JSON.parse(itemStr);
-          // 容器组件
-          if (itemData.type === 'container') {
-            if (!item.classList.contains('nested-sortable')) {
-              item.classList.add('nested-sortable');
-              Sortable.create(item, sortableOption);
-            }
-            console.log(itemData.name);
-          } else {
-            console.log(itemData.name);
-            // item.classList.add('no-container');
-          }
-          // 继续查找子元素
-          const childNodes = Array.from(item.childNodes);
-          const validChildNodes = childNodes.filter(
-            (item) => item.nodeType === 1 && get(item, 'attributes.data-item'),
-          );
-          if (validChildNodes.length) {
-            loop2(validChildNodes, collect, index);
-          } else {
-            // console.log(itemData.name);
-          }
+  console.log(domStack.join(''));
+  const json2jsx = () => {
+    const dataFilter = (data = []) => {
+      data.forEach((item) => {
+        item.type = item.name;
+        if (item.children) {
+          dataFilter(item.children);
         } else {
-          if (item.nodeType === 1 && get(item, 'attributes.data-item')) {
-            const childNodes = Array.from(item.childNodes);
-            loop2(childNodes, collect, index);
-          } else {
-            // console.log(itemData.name);
-          }
+          item.children = item.content;
         }
+      });
+    };
+    const codeTreeCopy = cloneDeep(codeTree);
+    dataFilter(codeTreeCopy);
+    const mapTypeToComponent = (type, props) => {
+      if (Object.keys(allComponents).includes(type)) {
+        return allComponents[type];
       }
+      return type;
+    };
+    console.log(codeTreeCopy);
+    const jsx = j2r(React.createElement, mapTypeToComponent, {
+      type: 'div',
+      props: { displayName: 'root' },
+      children: codeTreeCopy,
     });
+    console.log(jsx);
+    ReactDOM.render(jsx, previewRef.current);
   };
-  console.log(codeTree);
-  generator(codeTree);
+
   return (
-    <PageContainer waterMarkProps={{ content: '' }}>
-      <Card className={styles.card}>
+    <Card className={styles.card}>
+      <div className={styles.wrap}>
         <div ref={sourceRef} id="items" className={styles.list}>
           {componentList.map((item) => {
             return (
@@ -185,19 +193,21 @@ const Index = ({ dispatch, codeTree, componentList }) => {
           })}
         </div>
         <div ref={targetRef} id="container" className={styles.container}></div>
-        {/* <iframe ref={targetRef} className={styles.iframe} frameBorder={0} srcDoc={srcDoc}></iframe> */}
-        {/* <div ref={targetRef}>
-          <LiveProvider code={srcDoc} scope={{ Card, Button, styles }}>
-            <LiveError />
-            <LivePreview />
-          </LiveProvider>
-        </div> */}
-      </Card>
-    </PageContainer>
+      </div>
+      <div ref={previewRef} className={styles.preview}></div>
+      {/* <iframe className={styles.iframe} frameBorder={0} srcDoc={domStack.join('')}></iframe> */}
+      {/* <div>
+        <LiveProvider code={`<div>${domStack.join('')}</div>`} scope={{ Row, Col, Button }}>
+          <LiveError />
+          <LivePreview />
+        </LiveProvider>
+      </div> */}
+    </Card>
   );
 };
 
-export default connect(({ generator }) => ({
-  codeTree: generator.codeTree,
-  componentList: generator.componentList,
+export default connect(({ sortable }) => ({
+  codeTree: sortable.codeTree,
+  componentList: sortable.componentList,
+  domStack: sortable.domStack,
 }))(Index);

@@ -20,9 +20,14 @@
         component: './Example',
       },
       {
+        path: '/ReactSortable',
+        name: 'ReactSortable',
+        component: './ReactSortable',
+      },
+      {
         path: '/sortable',
         name: 'sortable',
-        component: './ReactSortable',
+        component: './Sortable',
       },
       {
         path: '/generator',
