@@ -1,15 +1,44 @@
 @import '~antd/lib/style/themes/default.less';
 
 :global {
-  .sortable-drag {
-    border: 1px dashed #000 !important;
-  }
+  // .sortable-drag {
+  //   border: 1px dashed #000 !important;
+  // }
+
   .sortable-chosen {
     border: 1px dashed #000 !important;
   }
-  .tag{
+
+  .nested-sortable {
     width: 100%;
-    color: #f00;
+  }
+
+  .sortable-related {
+    min-height: 24px;
+    min-width: 64px;
+    border: 1px dashed #fff !important;
+    background-color: #8af091;
+  }
+
+  .list-item {
+    padding: 2px;
+    &:hover {
+      border: 1px dashed #000 !important;
+    }
+  }
+
+  .vw {
+    width: 100%;
+  }
+
+  .block{
+    padding: 2px;
+    &:hover {
+      border: 1px dashed #000 !important;
+    }
+  }
+  .inline-block {
+    display: inline-block;
   }
 }
 
@@ -19,15 +48,21 @@
     display: flex;
   }
   .list {
-    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
     text-align: center;
     border: 1px solid #ccc;
   }
   .listItem {
     margin: 5px;
-    padding: 10px;
+    padding: 5px;
+    width: 100px;
+    text-align: center;
     // background-color: rgb(109, 145, 95);
-    border: 1px solid #ccc;
+    border: 1px solid #ccc;;
+    cursor: default;
   }
   .container {
     flex: 1;

@@ -31,3 +31,7 @@ export const waitTime = (time: number = 100) => {
     }, time);
   });
 };
+
+export const getDataType = (data: any) => {
+  return Object.prototype.toString.call(data).replace('[', '').replace(']', '').split(' ')[1];
+};

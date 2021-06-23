@@ -60,6 +60,7 @@
     "cesium": "^1.81.0",
     "classnames": "^2.2.6",
     "json2react": "^0.2.4",
+    "jsonx": "^1.10.3",
     "lodash": "^4.17.11",
     "moment": "^2.25.3",
     "monaco-editor": "^0.24.0",

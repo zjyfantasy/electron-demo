@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactDom from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Alert, Typography, Button } from 'antd';
@@ -6,8 +7,8 @@ import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
-
 import styles from './Welcome.less';
+import { allComponents } from './Sortable/config';
 
 const Index = ({ dispatch, codeTree, componentList }) => {
   const [srcDoc, setSrcDoc] = useState('<div></div>');
@@ -48,6 +49,21 @@ const Index = ({ dispatch, codeTree, componentList }) => {
       // },
       onEnd: function (evt) {
         const { oldIndex, newIndex } = evt;
+        const item = evt.item;
+        console.log(item);
+        const replaceNode = item.lastChild;
+        let div = document.createElement('div');
+        const itemStr = get(item, 'attributes.data-item.nodeValue');
+        const itemData = JSON.parse(itemStr);
+        div.setAttribute('class', 'sortable-item');
+        div.setAttribute('data-item', itemStr);
+        const newReactNode = React.createElement(
+          allComponents[itemData.name],
+          { ...itemData.defaultProps, ...itemData.props },
+          itemData.children,
+        );
+        ReactDom.render(newReactNode, div);
+        item.parentNode.replaceChild(div, item);
         resort();
       },
     });
@@ -171,7 +187,6 @@ const Index = ({ dispatch, codeTree, componentList }) => {
     });
   };
   console.log(codeTree);
-  generator(codeTree);
   return (
     <PageContainer waterMarkProps={{ content: '' }}>
       <Card className={styles.card}>
@@ -197,7 +212,7 @@ const Index = ({ dispatch, codeTree, componentList }) => {
   );
 };
 
-export default connect(({ generator }) => ({
-  codeTree: generator.codeTree,
-  componentList: generator.componentList,
+export default connect(({ sortable }) => ({
+  codeTree: sortable.codeTree,
+  componentList: sortable.componentList,
 }))(Index);

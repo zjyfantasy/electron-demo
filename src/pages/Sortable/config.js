@@ -2,69 +2,79 @@ import { v4 as uuid } from 'uuid';
 import { Button, Icon, Divider, Row, Col, Space, Form, Input, Dropdown } from 'antd';
 const FormItem = Form.Item;
 
-const allComponents = { Button, Icon, Divider, Row, Col, Space, FormItem, Input };
+const allComponents = { Button, Icon, Divider, Row, Col, Space, Form, FormItem, Input, Dropdown };
 
 export default [
   {
     content: 'Button',
     name: 'Button',
-    type: 'text',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
     props: { displayname: 'Button' },
+    children: ['Button'],
   },
   {
     content: 'Divider',
     name: 'Divider',
-    type: 'text',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
     props: { displayname: 'Divider' },
+    children: 'Divider',
   },
   {
     content: 'Row',
     name: 'Row',
-    type: 'container',
+    componentType: 'container',
     children: [],
+    defaultProps: { className: 'block' },
     props: { displayname: 'Row' },
   },
   {
     content: 'Col',
     name: 'Col',
-    type: 'container',
+    componentType: 'container',
     children: [],
+    defaultProps: { className: 'inline-block' },
     props: { displayname: 'Col' },
   },
   {
     content: 'Space',
     name: 'Space',
-    type: 'container',
-    props: { displayname: 'Space' },
-    children: [],
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: { displayname: 'Space', size: 'small' },
+    children: [''],
   },
   {
     content: 'Form',
     name: 'Form',
-    type: 'container',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
     props: { displayname: 'Form' },
     children: [],
   },
   {
     content: 'FormItem',
     name: 'FormItem',
-    type: 'container',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
     props: { displayname: 'FormItem' },
     children: [],
   },
   {
     content: 'Input',
     name: 'Input',
-    type: 'container',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block vw' },
     props: { displayname: 'Input' },
-    children: [],
   },
   {
     content: 'Dropdown',
     name: 'Dropdown',
-    type: 'container',
+    componentType: 'container',
+    defaultProps: { className: 'inline-block' },
     props: { displayname: 'Dropdown', overlay: ['1'] },
-    children: [],
+    children: [''],
   },
 ];
 
