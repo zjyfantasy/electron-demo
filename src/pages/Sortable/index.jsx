@@ -158,12 +158,9 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
 
       let tempElement = document.createElement('div');
       ReactDOM.render(reactElement, tempElement);
-      console.log('[tempElement]', tempElement);
       // 使可拖拽
       const componentElement = tempElement.lastChild;
       Sortable.create(componentElement, { ...sortableOption });
-      console.log('[componentElement]', componentElement);
-      console.log('[targetElement.parentNode]', targetElement.parentNode);
 
       targetElement.parentNode.replaceChild(componentElement, targetElement);
     }
@@ -172,6 +169,10 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   // 生成拖拽进来的组件
   const generateComponent = (itemStr) => {
     const itemData = JSON.parse(itemStr);
+    // loopTreeDataAny(itemData, (item) => (item.type = item.name));
+    // if (specialComponents.includes(itemData.name)) {
+    //   return j2r(React.createElement, mapTypeToComponent, itemData);
+    // }
 
     return React.createElement(
       allComponents[itemData.name],
@@ -190,7 +191,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     if (
       !evt.related.classList.contains('sortable-related') &&
       // evt.related.attributes?.id?.value !== 'container' && // 过滤根元素
-      !evt.related.classList.contains('list-item') // 非容器组件
+      !evt.related.classList.contains('list-item') // 容器组件
     ) {
       evt.related.classList.add('sortable-related');
     }
@@ -243,6 +244,10 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         tmp = { ...itemData, id: uuid() };
         collect.push(tmp);
 
+        // 处理特殊组件
+        if (itemData.name === 'Dropdown') {
+          return;
+        }
         // 继续查找子元素
         const childNodes = Array.from(item.childNodes);
 
@@ -271,22 +276,43 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
 
   /**
    * 遍历树结构
-   * @param {Array} res 节点树
+   * @param {Array} data 节点树
+   * @param {Function} callback 节点树
    */
   const loopTreeData = (data = [], callback) => {
-    data.forEach((item) => {
-      if (getDataType(item) === 'Object') {
-        callback(item);
-      }
-      const childrenType = getDataType(item.children);
-      switch (childrenType) {
-        case 'Array':
-          loopTreeData(item.children, callback);
-          break;
-        case 'String':
-          break;
-      }
-    });
+    const dataType = getDataType(data);
+    if (dataType === 'Array') {
+      data.forEach((item) => {
+        if (getDataType(item) === 'Object') {
+          callback(item);
+        }
+        const childrenType = getDataType(item.children);
+        switch (childrenType) {
+          case 'Array':
+            loopTreeData(item.children, callback);
+            break;
+          case 'String':
+            break;
+        }
+      });
+    }
+  };
+
+  /**
+   * 遍历树结构
+   * @param {Array} data 节点树
+   * @param {Function} callback 节点树
+   */
+  const loopTreeDataAny = (data, callback) => {
+    const dataType = getDataType(data);
+    switch (dataType) {
+      case 'Object':
+        callback(data);
+        loopTreeDataAny(data.children, callback);
+      case 'Array':
+        loopTreeData(data, callback);
+        break;
+    }
   };
 
   /**
@@ -294,7 +320,13 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
    */
   const json2jsx = () => {
     const codeTreeCopy = cloneDeep(codeTree);
-    loopTreeData(codeTreeCopy, (item) => (item.type = item.name));
+    loopTreeData(
+      codeTreeCopy,
+      // 合并属性
+      (item) => (
+        (item.type = item.name), (item.props = Object.assign({}, item.defaultProps, item.props))
+      ),
+    );
     console.log(codeTreeCopy);
     const jsx = j2r(React.createElement, mapTypeToComponent, {
       type: 'div',
@@ -311,8 +343,8 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         <div ref={sourceRef} id="items" className={styles.list}>
           {componentList.map((item) => {
             return (
-              <div data-item={JSON.stringify(item)} key={item.id} className={styles.listItem}>
-                {item.content}
+              <div data-item={JSON.stringify(item)} key={item.name} className={styles.listItem}>
+                {item.name}
               </div>
             );
           })}

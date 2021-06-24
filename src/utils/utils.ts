@@ -1,5 +1,6 @@
 import { parse } from 'querystring';
-
+import React from 'react';
+import { allComponents } from '@/pages/Sortable/config';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg =
   /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -34,4 +35,12 @@ export const waitTime = (time: number = 100) => {
 
 export const getDataType = (data: any) => {
   return Object.prototype.toString.call(data).replace('[', '').replace(']', '').split(' ')[1];
+};
+
+export const createElement = (data: any) => {
+  return React.createElement(
+    allComponents[data.name],
+    { ...data.defaultProps, ...data.props, ['data-item']: JSON.stringify(data) },
+    data.children,
+  );
 };
