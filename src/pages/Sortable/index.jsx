@@ -33,14 +33,6 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   const targetRef = useRef();
   const previewRef = useRef();
 
-  const reactSortableOptions = {
-    animation: 150,
-    fallbackOnBody: true,
-    swapThreshold: 0.65,
-    ghostClass: 'ghost',
-    group: 'shared',
-  };
-
   const sortableOption = {
     group: 'items',
     animation: 150,
@@ -71,6 +63,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           resort();
           return false;
         }
+        console.log('---------------', to);
         /** */
         const item = evt.item;
         const replaceNode = item.lastChild;
@@ -89,7 +82,11 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
 
         // 用临时div标签替换拖进来的item节点
         item.parentNode.replaceChild(div, item);
-        if (itemData.componentType === 'container') {
+
+        // 特殊组件
+        if (itemData.name === 'FormItem') {
+          div.classList.remove('list-item');
+        } else if (itemData.componentType === 'container') {
           // 去除临时div标签
           const componentNode = div.lastChild;
           if (componentNode) {
@@ -149,6 +146,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
    * @param {Element} targetElement
    */
   const matchSpecialComponent = (targetElement) => {
+    console.log(targetElement);
     // Space组件
     if (targetElement.classList.contains('ant-space')) {
       const loopRes = [];
@@ -163,6 +161,23 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       Sortable.create(componentElement, { ...sortableOption });
 
       targetElement.parentNode.replaceChild(componentElement, targetElement);
+    }
+    // FormItem组件
+    if (targetElement.classList.contains('ant-form')) {
+      // const loopRes = [];
+      // loopSingleElement(targetElement, loopRes);
+      // console.log(loopRes);
+      // const reactElement = j2r(React.createElement, mapTypeToComponent, ...loopRes);
+
+      const contentElements = targetElement.querySelectorAll(
+        '.ant-form-item-control-input-content',
+      );
+      contentElements.forEach((item) => {
+        console.log(item);
+        if (item.childNodes.length === 0) {
+          Sortable.create(item, { ...sortableOption });
+        }
+      });
     }
   };
 
@@ -181,16 +196,25 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     );
   };
 
+  // 添加禁放区
+  const addDisableArea = (element) => {
+    const formItemContent = element.classList.contains('ant-form-item-control-input-content');
+    console.log(formItemContent)
+    if (formItemContent && element.childNodes.length) {
+      element.classList.add('sortable-disable');
+    }
+  };
+
   // 拖拽组件移动事件
   const onMove = (evt) => {
-    // console.log(evt.related);
+    console.log(evt.to);
+    addDisableArea(evt.to);
     // // 添加根元素related
     // if (!targetRef.current.classList.contains('sortable-related')) {
     //   targetRef.current.classList.add('sortable-related');
     // }
     if (
       !evt.related.classList.contains('sortable-related') &&
-      // evt.related.attributes?.id?.value !== 'container' && // 过滤根元素
       !evt.related.classList.contains('list-item') // 容器组件
     ) {
       evt.related.classList.add('sortable-related');
@@ -230,6 +254,10 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       // 移除元素related
       if (item.classList.contains('sortable-related')) {
         item.classList.remove('sortable-related');
+      }
+      // 移除禁放区
+      if (item.classList.contains('sortable-disable')) {
+        item.classList.remove('sortable-disable');
       }
       const isMyComponent = get(item, 'attributes.data-item');
       if (isMyComponent) {
@@ -323,9 +351,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     loopTreeData(
       codeTreeCopy,
       // 合并属性
-      (item) => (
-        (item.type = item.name), (item.props = Object.assign({}, item.defaultProps, item.props))
-      ),
+      (item) => (item.type = item.name),
     );
     console.log(codeTreeCopy);
     const jsx = j2r(React.createElement, mapTypeToComponent, {

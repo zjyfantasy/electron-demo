@@ -65,11 +65,10 @@ export default [
     name: 'Dropdown',
     componentType: 'text',
     defaultProps: {
-      className: 'inline-block',
       arrow: true,
       placement: 'bottomCenter',
     },
-    props: { displayname: 'Dropdown', overlay: [1, 2, 3] },
+    props: { displayname: 'Dropdown', className: 'inline-block', overlay: [1, 2, 3] },
     children: [
       {
         name: 'Button',
