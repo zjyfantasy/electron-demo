@@ -1,5 +1,19 @@
 import { v4 as uuid } from 'uuid';
-import { Button, Divider, Row, Col, Space, Form, Input, Layout, Menu, Typography } from 'antd';
+import {
+  Button,
+  Divider,
+  Row,
+  Col,
+  Space,
+  Form,
+  Input,
+  Layout,
+  Menu,
+  Typography,
+  Affix,
+  Breadcrumb,
+  PageHeader,
+} from 'antd';
 import Dropdown from './components/Dropdown';
 // import Menu from './components/Menu';
 import Icon from './components/Icon';
@@ -9,6 +23,7 @@ const { Header, Footer, Sider, Content } = Layout;
 const { Item: MenuItem } = Menu;
 
 const { Title, Text, Link, Paragraph } = Typography;
+const { Item: BreadcrumbItem } = Breadcrumb;
 
 const allComponents = {
   Button,
@@ -21,6 +36,7 @@ const allComponents = {
   Row,
   Col,
   Space,
+  Affix,
   Form,
   FormItem,
   Input,
@@ -32,6 +48,9 @@ const allComponents = {
   Content,
   Menu,
   MenuItem,
+  Breadcrumb,
+  BreadcrumbItem,
+  PageHeader,
 };
 
 export default [
@@ -40,7 +59,7 @@ export default [
     componentType: 'text',
     defaultProps: { className: 'inline-block' },
     props: {},
-    children: ['Button'],
+    children: 'Button',
   },
   {
     name: 'Icon',
@@ -103,6 +122,35 @@ export default [
     defaultProps: { className: 'block' },
     props: { size: 'small' },
     children: [''],
+  },
+  {
+    name: 'Affix',
+    componentType: 'container',
+    defaultProps: {},
+    props: { className: 'inline-block' },
+    children: [
+      {
+        name: 'Button',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: ['Affix'],
+      },
+    ],
+  },
+  {
+    name: 'Breadcrumb',
+    componentType: 'container',
+    defaultProps: {},
+    props: { className: 'block' },
+    children: [],
+  },
+  {
+    name: 'BreadcrumbItem',
+    componentType: 'container',
+    defaultProps: {},
+    props: { className: 'inline-block' },
+    children: ['BreadcrumbItem'],
   },
   {
     name: 'Form',
@@ -188,7 +236,7 @@ export default [
         componentType: 'container',
         defaultProps: { className: 'block' },
         props: {},
-        children: ['1'],
+        children: '1',
       },
       {
         name: 'MenuItem',
@@ -198,6 +246,12 @@ export default [
         children: '2',
       },
     ],
+  },
+  {
+    name: 'PageHeader',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: { title: 'Title', subTitle: 'This is a subtitle', onBack: () => {} },
   },
 ];
 

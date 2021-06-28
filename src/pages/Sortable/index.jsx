@@ -80,12 +80,21 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         // 把组件渲染到临时标签上
         ReactDOM.render(newReactNode, div);
 
+        // 未绑定data-item数据组件重新绑定数据
+        if (div.lastChild.classList.contains('ant-page-header')) {
+          div.lastChild.setAttribute('data-item', itemStr);
+        }
         // 用临时div标签替换拖进来的item节点
         item.parentNode.replaceChild(div, item);
 
         // 特殊组件
         if (itemData.name === 'FormItem') {
           div.classList.remove('list-item');
+        } else if (['Affix'].includes(itemData.name)) {
+          const componentNode = div.lastChild;
+          if (componentNode) {
+            div.parentNode.replaceChild(componentNode, div);
+          }
         } else if (itemData.componentType === 'container') {
           // 去除临时div标签
           const componentNode = div.lastChild;
@@ -96,6 +105,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
             div.parentNode.replaceChild(componentNode, div);
           }
         }
+        // 拖拽目标为特殊组件
         matchSpecialComponent(to, div);
         // item.parentNode.replaceChild(div, item);
         resort();
@@ -188,7 +198,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   // 生成拖拽进来的组件
   const generateComponent = (itemStr) => {
     const itemData = JSON.parse(itemStr);
-    const specialComponents = ['Menu'];
+    const specialComponents = ['Menu', 'Affix', 'Breadcrumb'];
     if (specialComponents.includes(itemData.name)) {
       loopTreeDataAny(
         itemData,
@@ -281,7 +291,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         collect.push(tmp);
 
         // 处理特殊组件
-        if (['Dropdown', 'Menu'].includes(itemData.name)) {
+        if (['Dropdown', 'Affix'].includes(itemData.name)) {
           return;
         }
         // 继续查找子元素
@@ -290,11 +300,17 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         if (childNodes.length) {
           const childrenDataType = getDataType(tmp.children);
           if (childrenDataType === 'undefined') {
-            tmp['children'] = [];
+            // tmp['children'] = [];
+            return;
           } else if (childrenDataType === 'String') {
-            tmp['children'] = [tmp.children];
+            // tmp['children'] = [tmp.children];
+            return;
+          } else if (childrenDataType === 'Array') {
+            if (tmp.children.length === 1 && getDataType(tmp.children[0]) === 'String') {
+              return;
+            }
+            tmp['children'] = [];
           }
-
           loop(childNodes, tmp['children'], domStr);
         }
       } else {
