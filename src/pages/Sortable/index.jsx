@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card, Alert, Typography, Row, Col, Button, Dropdown } from 'antd';
+import { Card } from 'antd';
 import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -151,7 +151,11 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     if (targetElement.classList.contains('ant-space')) {
       const loopRes = [];
       loopSingleElement(targetElement, loopRes);
-      console.log(loopRes);
+      // 去除空占位元素
+      if (loopRes.length && loopRes[0].children.length) {
+        loopRes[0].children.shift();
+      }
+      // 重新创建Space组件（必须包含子组件一起创建）
       const reactElement = j2r(React.createElement, mapTypeToComponent, ...loopRes);
 
       let tempElement = document.createElement('div');

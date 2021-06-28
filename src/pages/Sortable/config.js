@@ -1,14 +1,22 @@
 import { v4 as uuid } from 'uuid';
-import { Button, Icon, Divider, Row, Col, Space, Form, Input, Layout, Menu } from 'antd';
+import { Button, Divider, Row, Col, Space, Form, Input, Layout, Menu, Typography } from 'antd';
 import Dropdown from './components/Dropdown';
 // import Menu from './components/Menu';
+import Icon from './components/Icon';
 
 const FormItem = Form.Item;
 const { Header, Footer, Sider, Content } = Layout;
 const { Item: MenuItem } = Menu;
+
+const { Title, Text, Link, Paragraph } = Typography;
+
 const allComponents = {
   Button,
   Icon,
+  Title,
+  Text,
+  Link,
+  Paragraph,
   Divider,
   Row,
   Col,
@@ -33,6 +41,40 @@ export default [
     defaultProps: { className: 'inline-block' },
     props: {},
     children: ['Button'],
+  },
+  {
+    name: 'Icon',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: { type: 'StepBackwardOutlined' },
+  },
+  {
+    name: 'Title',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: 'Title',
+  },
+  {
+    name: 'Text',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: 'Text',
+  },
+  {
+    name: 'Link',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: 'Link',
+  },
+  {
+    name: 'Paragraph',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: 'Paragraph',
   },
   {
     name: 'Divider',
