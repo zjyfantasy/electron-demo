@@ -184,10 +184,11 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   // 生成拖拽进来的组件
   const generateComponent = (itemStr) => {
     const itemData = JSON.parse(itemStr);
-    // loopTreeDataAny(itemData, (item) => (item.type = item.name));
-    // if (specialComponents.includes(itemData.name)) {
-    //   return j2r(React.createElement, mapTypeToComponent, itemData);
-    // }
+    const specialComponents = ['Menu'];
+    if (specialComponents.includes(itemData.name)) {
+      loopTreeDataAny(itemData, (item) => (item.type = item.name));
+      return j2r(React.createElement, mapTypeToComponent, itemData);
+    }
 
     return React.createElement(
       allComponents[itemData.name],
@@ -199,7 +200,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   // 添加禁放区
   const addDisableArea = (element) => {
     const formItemContent = element.classList.contains('ant-form-item-control-input-content');
-    console.log(formItemContent)
+    console.log(formItemContent);
     if (formItemContent && element.childNodes.length) {
       element.classList.add('sortable-disable');
     }
@@ -273,7 +274,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         collect.push(tmp);
 
         // 处理特殊组件
-        if (itemData.name === 'Dropdown') {
+        if (['Dropdown', 'Menu'].includes(itemData.name)) {
           return;
         }
         // 继续查找子元素

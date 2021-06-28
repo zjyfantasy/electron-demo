@@ -1,65 +1,86 @@
 import { v4 as uuid } from 'uuid';
-import { Button, Icon, Divider, Row, Col, Space, Form, Input } from 'antd';
+import { Button, Icon, Divider, Row, Col, Space, Form, Input, Layout, Menu } from 'antd';
 import Dropdown from './components/Dropdown';
-const FormItem = Form.Item;
+// import Menu from './components/Menu';
 
-const allComponents = { Button, Icon, Divider, Row, Col, Space, Form, FormItem, Input, Dropdown };
+const FormItem = Form.Item;
+const { Header, Footer, Sider, Content } = Layout;
+const { Item: MenuItem } = Menu;
+const allComponents = {
+  Button,
+  Icon,
+  Divider,
+  Row,
+  Col,
+  Space,
+  Form,
+  FormItem,
+  Input,
+  Dropdown,
+  Layout,
+  Header,
+  Footer,
+  Sider,
+  Content,
+  Menu,
+  MenuItem,
+};
 
 export default [
   {
     name: 'Button',
     componentType: 'text',
     defaultProps: { className: 'inline-block' },
-    props: { displayname: 'Button' },
+    props: {},
     children: ['Button'],
   },
   {
     name: 'Divider',
     componentType: 'text',
     defaultProps: { className: 'block' },
-    props: { displayname: 'Divider' },
+    props: {},
     children: 'Divider',
   },
   {
     name: 'Row',
     componentType: 'container',
-    children: [],
     defaultProps: { className: 'block' },
-    props: { displayname: 'Row' },
+    props: {},
+    children: [],
   },
   {
     name: 'Col',
     componentType: 'container',
-    children: [],
     defaultProps: { className: 'inline-block' },
-    props: { displayname: 'Col' },
+    props: {},
+    children: [],
   },
   {
     name: 'Space',
     componentType: 'container',
     defaultProps: { className: 'block' },
-    props: { displayname: 'Space', size: 'small' },
+    props: { size: 'small' },
     children: [''],
   },
   {
     name: 'Form',
     componentType: 'container',
     defaultProps: { className: 'block' },
-    props: { displayname: 'Form' },
+    props: {},
     children: [],
   },
   {
     name: 'FormItem',
     componentType: 'container',
     defaultProps: { className: 'block' },
-    props: { displayname: 'FormItem' },
+    props: {},
     children: [],
   },
   {
     name: 'Input',
     componentType: 'text',
     defaultProps: { className: 'inline-block vw' },
-    props: { displayname: 'Input' },
+    props: {},
   },
   {
     name: 'Dropdown',
@@ -68,16 +89,80 @@ export default [
       arrow: true,
       placement: 'bottomCenter',
     },
-    props: { displayname: 'Dropdown', className: 'inline-block', overlay: [1, 2, 3] },
+    props: { className: 'inline-block', overlay: [1, 2, 3] },
     children: [
       {
         name: 'Button',
         componentType: 'text',
         defaultProps: { className: 'inline-block' },
-        props: { displayname: 'Button' },
+        props: {},
         children: ['Dropdown'],
       },
     ],
+  },
+  // {
+  //   name: 'Layout',
+  //   componentType: 'container',
+  //   defaultProps: { className: 'block' },
+  //   props: {},
+  //   children: [],
+  // },
+  // {
+  //   name: 'Header',
+  //   componentType: 'container',
+  //   defaultProps: { className: 'block' },
+  //   props: {},
+  //   children: [],
+  // },
+  // {
+  //   name: 'Footer',
+  //   componentType: 'container',
+  //   defaultProps: { className: 'block' },
+  //   props: {},
+  //   children: [],
+  // },
+  // {
+  //   name: 'Sider',
+  //   componentType: 'container',
+  //   defaultProps: { className: 'block' },
+  //   props: {},
+  //   children: [],
+  // },
+  // {
+  //   name: 'Content',
+  //   componentType: 'container',
+  //   defaultProps: { className: 'block' },
+  //   props: {},
+  //   children: [],
+  // },
+  {
+    name: 'Menu',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [
+      {
+        name: 'MenuItem',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: {},
+        children: ['1'],
+      },
+      {
+        name: 'MenuItem',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: {},
+        children: '2',
+      },
+    ],
+  },
+  {
+    name: 'MenuItem',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [],
   },
 ];
 
