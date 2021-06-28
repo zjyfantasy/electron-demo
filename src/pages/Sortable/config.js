@@ -157,13 +157,6 @@ export default [
       },
     ],
   },
-  {
-    name: 'MenuItem',
-    componentType: 'container',
-    defaultProps: { className: 'block' },
-    props: {},
-    children: [],
-  },
 ];
 
 export { allComponents };

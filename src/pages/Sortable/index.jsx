@@ -186,7 +186,10 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     const itemData = JSON.parse(itemStr);
     const specialComponents = ['Menu'];
     if (specialComponents.includes(itemData.name)) {
-      loopTreeDataAny(itemData, (item) => (item.type = item.name));
+      loopTreeDataAny(
+        itemData,
+        (item) => ((item.type = item.name), (item.props['data-item'] = JSON.stringify(item))),
+      );
       return j2r(React.createElement, mapTypeToComponent, itemData);
     }
 
