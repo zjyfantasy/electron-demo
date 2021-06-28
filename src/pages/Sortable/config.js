@@ -13,6 +13,7 @@ import {
   Affix,
   Breadcrumb,
   PageHeader,
+  Pagination,
 } from 'antd';
 import Dropdown from './components/Dropdown';
 // import Menu from './components/Menu';
@@ -51,6 +52,7 @@ const allComponents = {
   Breadcrumb,
   BreadcrumbItem,
   PageHeader,
+  Pagination,
 };
 
 export default [
@@ -126,6 +128,7 @@ export default [
   {
     name: 'Affix',
     componentType: 'container',
+    disableDrag: true,
     defaultProps: {},
     props: { className: 'inline-block' },
     children: [
@@ -162,6 +165,7 @@ export default [
   {
     name: 'FormItem',
     componentType: 'container',
+    disableDrag: true,
     defaultProps: { className: 'block' },
     props: {},
     children: [],
@@ -169,6 +173,7 @@ export default [
   {
     name: 'Input',
     componentType: 'text',
+    disableDrag: true,
     defaultProps: { className: 'inline-block vw' },
     props: {},
   },
@@ -252,6 +257,13 @@ export default [
     componentType: 'container',
     defaultProps: { className: 'block' },
     props: { title: 'Title', subTitle: 'This is a subtitle', onBack: () => {} },
+  },
+  {
+    name: 'Pagination',
+    componentType: 'text',
+    disableDrag: true,
+    defaultProps: { className: 'block' },
+    props: { current: 1, pageSize: 10, total: 50 },
   },
 ];
 

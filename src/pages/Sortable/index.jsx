@@ -88,9 +88,8 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         item.parentNode.replaceChild(div, item);
 
         // 特殊组件
-        if (itemData.name === 'FormItem') {
-          div.classList.remove('list-item');
-        } else if (['Affix'].includes(itemData.name)) {
+        if (itemData.disableDrag) {
+          // 禁止元素拖拽
           const componentNode = div.lastChild;
           if (componentNode) {
             div.parentNode.replaceChild(componentNode, div);
@@ -178,20 +177,17 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     }
     // FormItem组件
     if (targetElement.classList.contains('ant-form')) {
-      // const loopRes = [];
-      // loopSingleElement(targetElement, loopRes);
-      // console.log(loopRes);
-      // const reactElement = j2r(React.createElement, mapTypeToComponent, ...loopRes);
-
       const contentElements = targetElement.querySelectorAll(
         '.ant-form-item-control-input-content',
       );
-      contentElements.forEach((item) => {
-        console.log(item);
-        if (item.childNodes.length === 0) {
-          Sortable.create(item, { ...sortableOption });
-        }
-      });
+      if (!contentElements.childNodes) {
+        contentElements.forEach((item) => {
+          console.log('******', item);
+          if (item.childNodes.length === 0) {
+            Sortable.create(item, { ...sortableOption });
+          }
+        });
+      }
     }
   };
 
@@ -214,19 +210,37 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     );
   };
 
-  // 添加禁放区
+  /**
+   *添加禁放区
+   * @param {Element} element 目标元素
+   * @returns Boolen {true:可以放置，false：不可放置}
+   */
   const addDisableArea = (element) => {
+    // FormItem
     const formItemContent = element.classList.contains('ant-form-item-control-input-content');
-    console.log(formItemContent);
     if (formItemContent && element.childNodes.length) {
       element.classList.add('sortable-disable');
+      return false;
     }
+    // pagination
+    const pagination = element.classList.contains('ant-pagination');
+    if (pagination) return false;
+
+    return true;
+  };
+
+  const filterDisableArea = (element) => {
+    // pagination
+    const pagination = element.querySelector('.ant-pagination');
+    return !!pagination;
   };
 
   // 拖拽组件移动事件
   const onMove = (evt) => {
-    console.log(evt.to);
-    addDisableArea(evt.to);
+    const res = addDisableArea(evt.to);
+    if (!res) {
+      return false;
+    }
     // // 添加根元素related
     // if (!targetRef.current.classList.contains('sortable-related')) {
     //   targetRef.current.classList.add('sortable-related');
@@ -235,6 +249,16 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       !evt.related.classList.contains('sortable-related') &&
       !evt.related.classList.contains('list-item') // 容器组件
     ) {
+      // // 过滤节点
+      // if (filterDisableArea(evt.to)) return;
+      // 过滤非容器组件
+      const isMyComponent = get(evt, 'related.attributes.data-item');
+      if (isMyComponent) {
+        // 获取属性
+        const itemStr = get(isMyComponent, 'nodeValue');
+        const itemData = JSON.parse(itemStr);
+        if (itemData.componentType === 'text') return;
+      }
       evt.related.classList.add('sortable-related');
     }
   };
@@ -256,12 +280,6 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     let res = [];
     loop(childNodes, res, domStack);
     dispatch({ type: 'sortable/save', payload: { codeTree: res, domStack } });
-  };
-
-  // 判断有效子节点
-  const hasValidChildNodes = (item) => {
-    item.nodeType === 1 &&
-      (get(item, 'attributes.data-item') || item.classList.contains('list-item'));
   };
 
   // 遍历容器节点添加可拖拽元素
