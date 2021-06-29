@@ -31,6 +31,7 @@ import {
   Card,
   Carousel,
   Collapse,
+  Descriptions,
 } from 'antd';
 
 import Dropdown from './components/Dropdown';
@@ -48,7 +49,7 @@ const { Step } = Steps;
 const { Option: SelectOption } = Select;
 const { TreeNode } = TreeSelect;
 const { Panel } = Collapse;
-
+const { Item: DescriptionsItem } = Descriptions;
 const allComponents = {
   Button,
   Icon,
@@ -98,6 +99,8 @@ const allComponents = {
   Carousel,
   Collapse,
   Panel,
+  Descriptions,
+  DescriptionsItem,
 };
 
 export default [
@@ -528,6 +531,29 @@ export default [
             children: ['Panel Content'],
           },
         ],
+      },
+    ],
+  },
+  {
+    name: 'Descriptions',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'block' },
+    props: { title: 'User Info' },
+    children: [
+      {
+        name: 'DescriptionsItem',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { label: 'UserName' },
+        children: ['Zhou Maomao'],
+      },
+      {
+        name: 'DescriptionsItem',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { label: 'Telephone' },
+        children: ['1810000000'],
       },
     ],
   },

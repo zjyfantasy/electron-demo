@@ -129,6 +129,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           'Calendar',
           'Carousel',
           'Collapse',
+          'Descriptions',
         ].includes(dataItem.name)
       ) {
         element.setAttribute('data-item', itemStr);
@@ -234,6 +235,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       'Badge',
       'Carousel',
       'Collapse',
+      'Descriptions',
     ];
     if (specialComponents.includes(itemData.name)) {
       loopTreeDataAny(
@@ -354,9 +356,16 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
 
         // 处理特殊组件
         if (
-          ['Dropdown', 'Affix', 'Select', 'TreeSelect', 'Upload', 'Carousel', 'Collapse'].includes(
-            itemData.name,
-          )
+          [
+            'Dropdown',
+            'Affix',
+            'Select',
+            'TreeSelect',
+            'Upload',
+            'Carousel',
+            'Collapse',
+            'Descriptions',
+          ].includes(itemData.name)
         ) {
           return;
         }
