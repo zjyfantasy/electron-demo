@@ -14,10 +14,29 @@ import {
   Breadcrumb,
   PageHeader,
   Pagination,
+  Steps,
+  Checkbox,
+  DatePicker,
+  Radio,
+  Rate,
+  Select,
+  Slider,
+  Switch,
+  TimePicker,
+  TreeSelect,
+  Upload,
+  Avatar,
+  Badge,
+  Calendar,
+  Card,
+  Carousel,
+  Collapse,
 } from 'antd';
+
 import Dropdown from './components/Dropdown';
-// import Menu from './components/Menu';
 import Icon from './components/Icon';
+import Transfer from './components/Transfer';
+import React from 'react';
 
 const FormItem = Form.Item;
 const { Header, Footer, Sider, Content } = Layout;
@@ -25,6 +44,10 @@ const { Item: MenuItem } = Menu;
 
 const { Title, Text, Link, Paragraph } = Typography;
 const { Item: BreadcrumbItem } = Breadcrumb;
+const { Step } = Steps;
+const { Option: SelectOption } = Select;
+const { TreeNode } = TreeSelect;
+const { Panel } = Collapse;
 
 const allComponents = {
   Button,
@@ -53,6 +76,28 @@ const allComponents = {
   BreadcrumbItem,
   PageHeader,
   Pagination,
+  Steps,
+  Step,
+  Checkbox,
+  Radio,
+  DatePicker,
+  TimePicker,
+  Rate,
+  Select,
+  SelectOption,
+  Slider,
+  Switch,
+  Transfer,
+  TreeSelect,
+  TreeNode,
+  Upload,
+  Avatar,
+  Badge,
+  Calendar,
+  Card,
+  Carousel,
+  Collapse,
+  Panel,
 };
 
 export default [
@@ -115,7 +160,7 @@ export default [
     name: 'Col',
     componentType: 'container',
     defaultProps: { className: 'inline-block' },
-    props: {},
+    props: { span: 4 },
     children: [],
   },
   {
@@ -173,9 +218,112 @@ export default [
   {
     name: 'Input',
     componentType: 'text',
-    disableDrag: true,
-    defaultProps: { className: 'inline-block vw' },
+    // disableDrag: true,
+    defaultProps: { className: '' },
     props: {},
+  },
+  {
+    name: 'Select',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      className: 'vw',
+    },
+    children: [
+      {
+        name: 'SelectOption',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: {},
+        children: 'SelectOption',
+      },
+    ],
+  },
+  {
+    name: 'Checkbox',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+    children: 'Checkbox',
+  },
+  {
+    name: 'Radio',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+    children: 'Radio',
+  },
+  {
+    name: 'Rate',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+  },
+  {
+    name: 'DatePicker',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+  },
+  {
+    name: 'TimePicker',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+  },
+  {
+    name: 'Calendar',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+  },
+
+  {
+    name: 'Slider',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: { defaultValue: 30 },
+  },
+  {
+    name: 'Switch',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+  },
+  {
+    name: 'Transfer',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      dataSource: [
+        { key: 1, title: 'content 1' },
+        { key: 2, title: 'content 2' },
+        { key: 3, title: 'content 3' },
+      ],
+      titles: ['Source', 'Target'],
+    },
+  },
+  {
+    name: 'TreeSelect',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: { className: 'vw' },
+    children: [
+      {
+        name: 'TreeNode',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { value: 'parent 1', title: 'parent 1' },
+        children: [
+          {
+            name: 'TreeNode',
+            componentType: 'text',
+            defaultProps: { className: 'block' },
+            props: { value: 'leaf1', title: 'leaf1' },
+          },
+        ],
+      },
+    ],
   },
   {
     name: 'Dropdown',
@@ -192,6 +340,43 @@ export default [
         defaultProps: { className: 'inline-block' },
         props: {},
         children: ['Dropdown'],
+      },
+    ],
+  },
+  {
+    name: 'Upload',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+    children: [
+      {
+        name: 'Button',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: ['Upload'],
+      },
+    ],
+  },
+  {
+    name: 'Avatar',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: { shape: 'square', size: 'default', icon: 'icon' },
+  },
+  {
+    name: 'Badge',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'inline-block' },
+    props: { count: 3, dot: false },
+    children: [
+      {
+        name: 'Button',
+        componentType: 'container',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: ['Badge'],
       },
     ],
   },
@@ -255,6 +440,7 @@ export default [
   {
     name: 'PageHeader',
     componentType: 'container',
+    disableDrag: true,
     defaultProps: { className: 'block' },
     props: { title: 'Title', subTitle: 'This is a subtitle', onBack: () => {} },
   },
@@ -264,6 +450,86 @@ export default [
     disableDrag: true,
     defaultProps: { className: 'block' },
     props: { current: 1, pageSize: 10, total: 50 },
+  },
+  {
+    name: 'Steps',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: { current: 0 },
+    children: [
+      {
+        name: 'Step',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {
+          titlt: 'Step 1',
+          subTitle: 'This is a subTitle.',
+          description: 'This is a description.',
+        },
+      },
+      {
+        name: 'Step',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {
+          titlt: 'Step 2',
+          subTitle: 'This is a subTitle.',
+          description: 'This is a description.',
+        },
+      },
+    ],
+  },
+  {
+    name: 'Card',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [],
+  },
+  {
+    name: 'Carousel',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [
+      {
+        name: 'div',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { className: 'carousel' },
+        children: '1',
+      },
+      {
+        name: 'div',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { className: 'carousel' },
+        children: '2',
+      },
+    ],
+  },
+  {
+    name: 'Collapse',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [
+      {
+        name: 'Panel',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { header: 'This is panel header', key: '1' },
+        children: [
+          {
+            name: 'p',
+            componentType: 'container',
+            props: {},
+            children: ['Panel Content'],
+          },
+        ],
+      },
+    ],
   },
 ];
 

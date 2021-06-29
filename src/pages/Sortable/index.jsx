@@ -81,9 +81,8 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         ReactDOM.render(newReactNode, div);
 
         // 未绑定data-item数据组件重新绑定数据
-        if (div.lastChild.classList.contains('ant-page-header')) {
-          div.lastChild.setAttribute('data-item', itemStr);
-        }
+        bindDataItem(div.lastChild, itemStr);
+
         // 用临时div标签替换拖进来的item节点
         item.parentNode.replaceChild(div, item);
 
@@ -106,12 +105,36 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         }
         // 拖拽目标为特殊组件
         matchSpecialComponent(to, div);
-        // item.parentNode.replaceChild(div, item);
         resort();
       },
     });
     Sortable.create(targetRef.current, { ...sortableOption });
   }, []);
+
+  /**
+   * 绑定数据到节点
+   * @param {Element} element 绑定数据的节点
+   * @param {String} itemStr 序列化数据
+   */
+  const bindDataItem = (element, itemStr) => {
+    if (element) {
+      const dataItem = JSON.parse(itemStr);
+      if (
+        [
+          'PageHeader',
+          'Rate',
+          'Slider',
+          'Transfer',
+          'Upload',
+          'Calendar',
+          'Carousel',
+          'Collapse',
+        ].includes(dataItem.name)
+      ) {
+        element.setAttribute('data-item', itemStr);
+      }
+    }
+  };
 
   /**
    * 遍历单节点及其子节点
@@ -189,12 +212,29 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         });
       }
     }
+
+    // Card组件
+    const bodyElements = targetElement.querySelectorAll('.ant-card-body');
+    if (bodyElements.length) {
+      bodyElements.forEach((item) => Sortable.create(item, { ...sortableOption }));
+    }
   };
 
   // 生成拖拽进来的组件
   const generateComponent = (itemStr) => {
     const itemData = JSON.parse(itemStr);
-    const specialComponents = ['Menu', 'Affix', 'Breadcrumb'];
+    const specialComponents = [
+      'Menu',
+      'Affix',
+      'Breadcrumb',
+      'Steps',
+      'Select',
+      'TreeSelect',
+      'Upload',
+      'Badge',
+      'Carousel',
+      'Collapse',
+    ];
     if (specialComponents.includes(itemData.name)) {
       loopTreeDataAny(
         itemData,
@@ -203,9 +243,13 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       return j2r(React.createElement, mapTypeToComponent, itemData);
     }
 
+    const componentName = allComponents[itemData.name]
+      ? allComponents[itemData.name]
+      : itemData.name;
+    // 创建组件时defaultProps和props分开，props是真实作用于组件上的属性
     return React.createElement(
-      allComponents[itemData.name],
-      { ...itemData.defaultProps, ...itemData.props, ['data-item']: itemStr },
+      componentName,
+      { ...itemData.props, ['data-item']: itemStr },
       itemData.children,
     );
   };
@@ -309,7 +353,11 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         collect.push(tmp);
 
         // 处理特殊组件
-        if (['Dropdown', 'Affix'].includes(itemData.name)) {
+        if (
+          ['Dropdown', 'Affix', 'Select', 'TreeSelect', 'Upload', 'Carousel', 'Collapse'].includes(
+            itemData.name,
+          )
+        ) {
           return;
         }
         // 继续查找子元素
@@ -426,6 +474,10 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           <LiveError />
           <LivePreview />
         </LiveProvider>
+      </div> */}
+      {/* <div className={styles.outer}>
+        <div className={styles.left}></div>
+        <div className={styles.right}></div>
       </div> */}
     </Card>
   );
