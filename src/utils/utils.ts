@@ -2,6 +2,7 @@ import { parse } from 'querystring';
 import React from 'react';
 import * as babel from '@babel/standalone';
 import { allComponents } from '@/pages/Sortable/config';
+import j2r from 'json2react';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg =
   /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -68,4 +69,64 @@ export const jsx2function = (jsx: string) => {
   }).code;
   renderMethod = renderMethod?.replace(`"use strict";`, '');
   return eval(`false||${renderMethod}`);
+};
+
+/**
+ * 遍历树结构
+ * @param {Array} data 节点树
+ * @param {Function} callback 节点树
+ */
+export const loopTreeDataAny = (data: any, callback: Function) => {
+  const dataType = getDataType(data);
+  switch (dataType) {
+    case 'Object':
+      callback && callback(data);
+      loopTreeDataAny(data.children, callback);
+    case 'Array':
+      loopTreeData(data, callback);
+      break;
+  }
+};
+
+/**
+ * 遍历树结构
+ * @param {Array} data 节点树
+ * @param {Function} callback 节点树
+ */
+const loopTreeData = (data: Array<any>, callback: Function) => {
+  const dataType = getDataType(data);
+  if (dataType === 'Array') {
+    data.forEach((item: TreeData) => {
+      if (getDataType(item) === 'Object') {
+        callback && callback(item);
+      }
+      const childrenType = getDataType(item.children);
+      switch (childrenType) {
+        case 'Array':
+          loopTreeData(item.children, callback);
+          break;
+        case 'String':
+          break;
+      }
+    });
+  }
+};
+
+export const json2react = (json: object) => {
+  return j2r(React.createElement, mapTypeToComponent, json);
+};
+
+const mapTypeToComponent = (type: string, props: object) => {
+  if (Object.keys(allComponents).includes(type)) {
+    return allComponents[type];
+  }
+  return type;
+};
+
+type TreeData = {
+  name: string;
+  componentType: string;
+  defaultProps?: object;
+  props: object;
+  children: Array<any> | any;
 };

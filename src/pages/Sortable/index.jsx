@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card ,List} from 'antd';
+import { Card } from 'antd';
 import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
-import j2r from 'json2react';
 import * as jsonx from 'jsonx';
-import { getDataType } from '@/utils/utils';
+import { json2react, getDataType, loopTreeDataAny } from '@/utils/utils';
 import { allComponents } from './config';
 import styles from './index.less';
 
@@ -18,13 +17,6 @@ const getReactElement = jsonx.getReactElement.bind({
     allComponents,
   },
 });
-
-const mapTypeToComponent = (type, props) => {
-  if (Object.keys(allComponents).includes(type)) {
-    return allComponents[type];
-  }
-  return type;
-};
 
 const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   const [srcDoc, setSrcDoc] = useState('<div></div>');
@@ -130,6 +122,8 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           'Carousel',
           'Collapse',
           'Descriptions',
+          'Statistic',
+          'Tabs',
         ].includes(dataItem.name)
       ) {
         element.setAttribute('data-item', itemStr);
@@ -189,8 +183,8 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
         loopRes[0].children.shift();
       }
       // 重新创建Space组件（必须包含子组件一起创建）
-      const reactElement = j2r(React.createElement, mapTypeToComponent, ...loopRes);
-
+      // const reactElement = j2r(React.createElement, mapTypeToComponent, ...loopRes);
+      json2react(...loopRes);
       let tempElement = document.createElement('div');
       ReactDOM.render(reactElement, tempElement);
       // 使可拖拽
@@ -236,13 +230,15 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       'Carousel',
       'Collapse',
       'Descriptions',
+      'Tabs',
     ];
     if (specialComponents.includes(itemData.name)) {
       loopTreeDataAny(
         itemData,
         (item) => ((item.type = item.name), (item.props['data-item'] = JSON.stringify(item))),
       );
-      return j2r(React.createElement, mapTypeToComponent, itemData);
+      // return j2r(React.createElement, mapTypeToComponent, itemData);
+      return json2react(itemData);
     }
 
     const componentName = allComponents[itemData.name]
@@ -365,8 +361,13 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
             'Carousel',
             'Collapse',
             'Descriptions',
+            'Tabs',
           ].includes(itemData.name)
         ) {
+          if (isMyComponent) {
+            domStr.push(`</${itemData.name}>`);
+            console.log(`</${itemData.name}>`);
+          }
           return;
         }
         // 继续查找子元素
@@ -376,12 +377,24 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           const childrenDataType = getDataType(tmp.children);
           if (childrenDataType === 'undefined') {
             // tmp['children'] = [];
+            if (isMyComponent) {
+              domStr.push(`</${itemData.name}>`);
+              console.log(`</${itemData.name}>`);
+            }
             return;
           } else if (childrenDataType === 'String') {
             // tmp['children'] = [tmp.children];
+            if (isMyComponent) {
+              domStr.push(`</${itemData.name}>`);
+              console.log(`</${itemData.name}>`);
+            }
             return;
           } else if (childrenDataType === 'Array') {
             if (tmp.children.length === 1 && getDataType(tmp.children[0]) === 'String') {
+              if (isMyComponent) {
+                domStr.push(`</${itemData.name}>`);
+                console.log(`</${itemData.name}>`);
+              }
               return;
             }
             tmp['children'] = [];
@@ -402,58 +415,22 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   console.log(domStack.join(''));
 
   /**
-   * 遍历树结构
-   * @param {Array} data 节点树
-   * @param {Function} callback 节点树
-   */
-  const loopTreeData = (data = [], callback) => {
-    const dataType = getDataType(data);
-    if (dataType === 'Array') {
-      data.forEach((item) => {
-        if (getDataType(item) === 'Object') {
-          callback(item);
-        }
-        const childrenType = getDataType(item.children);
-        switch (childrenType) {
-          case 'Array':
-            loopTreeData(item.children, callback);
-            break;
-          case 'String':
-            break;
-        }
-      });
-    }
-  };
-
-  /**
-   * 遍历树结构
-   * @param {Array} data 节点树
-   * @param {Function} callback 节点树
-   */
-  const loopTreeDataAny = (data, callback) => {
-    const dataType = getDataType(data);
-    switch (dataType) {
-      case 'Object':
-        callback(data);
-        loopTreeDataAny(data.children, callback);
-      case 'Array':
-        loopTreeData(data, callback);
-        break;
-    }
-  };
-
-  /**
    * json转jsx
    */
   const json2jsx = () => {
     const codeTreeCopy = cloneDeep(codeTree);
-    loopTreeData(
+    loopTreeDataAny(
       codeTreeCopy,
       // 合并属性
       (item) => (item.type = item.name),
     );
     console.log(codeTreeCopy);
-    const jsx = j2r(React.createElement, mapTypeToComponent, {
+    // const jsx = j2r(React.createElement, mapTypeToComponent, {
+    //   type: 'div',
+    //   props: { displayname: 'root' },
+    //   children: codeTreeCopy,
+    // });
+    const jsx = json2react({
       type: 'div',
       props: { displayname: 'root' },
       children: codeTreeCopy,

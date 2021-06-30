@@ -34,12 +34,20 @@ import {
   Descriptions,
   Empty,
   Image,
+  Statistic,
+  Tabs,
+  Tag,
+  Timeline,
 } from 'antd';
 
 import Dropdown from './components/Dropdown';
 import Icon from './components/Icon';
 import Transfer from './components/Transfer';
 import List from './components/List';
+import Popover from './components/Popover';
+import Tooltip from './components/Tooltip';
+import Table from './components/Table';
+import Tree from './components/Tree';
 import React from 'react';
 
 const FormItem = Form.Item;
@@ -53,6 +61,9 @@ const { Option: SelectOption } = Select;
 const { TreeNode } = TreeSelect;
 const { Panel } = Collapse;
 const { Item: DescriptionsItem } = Descriptions;
+const { TabPane } = Tabs;
+const { Item: TimelineItem } = Timeline;
+
 const allComponents = {
   Button,
   Icon,
@@ -107,7 +118,100 @@ const allComponents = {
   Empty,
   Image,
   List,
+  Popover,
+  Statistic,
+  Table,
+  Tabs,
+  TabPane,
+  Tag,
+  Timeline,
+  TimelineItem,
+  Tooltip,
+  Tree,
 };
+
+const columns = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+    render: `(text) => <a>{text}</a>`,
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    key: 'address',
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render: `(text, record) => (
+      <Space size="middle">
+        <a>Invite {record.name}</a>
+        <a>Delete</a>
+      </Space>
+    )`,
+  },
+];
+
+const dataSource = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    address: 'New York No. 1 Lake Park',
+    tags: ['nice', 'developer'],
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    age: 42,
+    address: 'London No. 1 Lake Park',
+    tags: ['loser'],
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    address: 'Sidney No. 1 Lake Park',
+    tags: ['cool', 'teacher'],
+  },
+];
+
+const treeData = [
+  {
+    title: 'parent 1',
+    key: '0-0',
+    children: [
+      {
+        title: 'parent 1-0',
+        key: '0-0-0',
+        disabled: true,
+        children: [
+          {
+            title: 'leaf',
+            key: '0-0-0-0',
+            disableCheckbox: true,
+          },
+          {
+            title: 'leaf',
+            key: '0-0-0-1',
+          },
+        ],
+      },
+      {
+        title: 'parent 1-1',
+        key: '0-0-1',
+        children: [{ title: 'sss', key: '0-0-1-0' }],
+      },
+    ],
+  },
+];
 
 export default [
   {
@@ -592,6 +696,134 @@ export default [
       }`,
     },
   },
+  {
+    name: 'Popover',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'inline-block' },
+    props: {
+      title: 'Title',
+      content: 'content',
+      trigger: 'hover',
+      getPopupContainer: `(e)=>e.parentNode`,
+    },
+    children: [
+      {
+        name: 'Button',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: 'Popover',
+      },
+    ],
+  },
+  {
+    name: 'Tooltip',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'inline-block' },
+    props: {
+      title: 'Title',
+      trigger: 'hover',
+      getPopupContainer: `(e)=>e.parentNode`,
+    },
+    children: [
+      {
+        name: 'Button',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: 'Tooltip',
+      },
+    ],
+  },
+  {
+    name: 'Statistic',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      title: 'Account Balance (CNY)',
+      value: 112893,
+      precision: 2,
+    },
+  },
+  {
+    name: 'Table',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      columns,
+      dataSource,
+    },
+  },
+  {
+    name: 'Tabs',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [
+      {
+        name: 'TabPane',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { tab: 'Tab1', key: '1' },
+        children: ['Tab Pane1'],
+      },
+      {
+        name: 'TabPane',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: { tab: 'Tab2', key: '2' },
+        children: ['Tab Pane2'],
+      },
+    ],
+  },
+  {
+    name: 'Tag',
+    componentType: 'container',
+    defaultProps: { className: 'inline-block' },
+    props: {},
+    children: [],
+  },
+  {
+    name: 'Timeline',
+    componentType: 'container',
+    defaultProps: { className: 'block' },
+    props: {},
+    children: [],
+  },
+  {
+    name: 'TimelineItem',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'block' },
+    props: {},
+    children: ['TimelineItem'],
+  },
+  {
+    name: 'Tree',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      checkable: true,
+      onSelect: `(selectedKeys, info) => {
+        console.log('selected', selectedKeys, info);
+      }`,
+      onCheck: `(checkedKeys, info) => {
+        console.log('onCheck', checkedKeys, info);
+      }`,
+      treeData,
+    },
+  },
 ];
 
-export { allComponents };
+const mapTypeToComponent = (type, props) => {
+  if (Object.keys(allComponents).includes(type)) {
+    return allComponents[type];
+  }
+  return type;
+};
+
+Object.keys(allComponents).forEach((key) => (window[key] = allComponents[key]));
+
+export { allComponents, mapTypeToComponent };
