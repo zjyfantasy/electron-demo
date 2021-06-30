@@ -32,11 +32,14 @@ import {
   Carousel,
   Collapse,
   Descriptions,
+  Empty,
+  Image,
 } from 'antd';
 
 import Dropdown from './components/Dropdown';
 import Icon from './components/Icon';
 import Transfer from './components/Transfer';
+import List from './components/List';
 import React from 'react';
 
 const FormItem = Form.Item;
@@ -101,6 +104,9 @@ const allComponents = {
   Panel,
   Descriptions,
   DescriptionsItem,
+  Empty,
+  Image,
+  List,
 };
 
 export default [
@@ -556,6 +562,35 @@ export default [
         children: ['1810000000'],
       },
     ],
+  },
+  {
+    name: 'Empty',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {},
+  },
+  {
+    name: 'Image',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {
+      width: 200,
+      src: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+    },
+  },
+  {
+    name: 'List',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: {
+      header: 'Header',
+      footer: 'Footer',
+      bordered: true,
+      dataSource: ['Item 1', 'Item 2', 'Item 3'],
+      renderItem: `(item, List) => {
+        return <List.Item>{item}</List.Item>;
+      }`,
+    },
   },
 ];
 

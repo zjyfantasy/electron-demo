@@ -1,5 +1,6 @@
 import { parse } from 'querystring';
 import React from 'react';
+import * as babel from '@babel/standalone';
 import { allComponents } from '@/pages/Sortable/config';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 const reg =
@@ -33,14 +34,38 @@ export const waitTime = (time: number = 100) => {
   });
 };
 
+/**
+ * 获取参数数据类型
+ * @param data object获取数据类型
+ * @returns string 数据类型
+ */
 export const getDataType = (data: any) => {
   return Object.prototype.toString.call(data).replace('[', '').replace(']', '').split(' ')[1];
 };
 
+/**
+ * 创建节点
+ * @param data onject 节点树对象
+ * @returns element 节点
+ */
 export const createElement = (data: any) => {
   return React.createElement(
     allComponents[data.name],
     { ...data.defaultProps, ...data.props, ['data-item']: JSON.stringify(data) },
     data.children,
   );
+};
+
+/**
+ * 转换字符串函数为可执行函数
+ * @param jsx string 包含jsx的函数字符串
+ * @returns function 返回可执行函数
+ */
+export const jsx2function = (jsx: string) => {
+  let renderMethod = babel.transform(jsx, {
+    presets: ['env', 'react'],
+    plugins: ['transform-react-jsx'],
+  }).code;
+  renderMethod = renderMethod?.replace(`"use strict";`, '');
+  return eval(`false||${renderMethod}`);
 };

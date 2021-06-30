@@ -1,9 +1,11 @@
+import React from 'react';
 import { Button, message, notification } from 'antd';
 import { useIntl } from 'umi';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
+window.React = React;
 // window.CESIUM_BASE_URL = '/';
 // if pwa is true
 if (pwa) {

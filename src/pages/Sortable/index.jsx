@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card } from 'antd';
+import { Card ,List} from 'antd';
 import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -455,7 +455,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     console.log(codeTreeCopy);
     const jsx = j2r(React.createElement, mapTypeToComponent, {
       type: 'div',
-      props: { displayName: 'root' },
+      props: { displayname: 'root' },
       children: codeTreeCopy,
     });
     console.log(jsx);
