@@ -18,11 +18,12 @@ const getReactElement = jsonx.getReactElement.bind({
   },
 });
 
-const Index = ({ dispatch, codeTree, componentList, domStack }) => {
+const Index = ({ dispatch, codeTree, componentList, domStack, selectedComponentData }) => {
   const [srcDoc, setSrcDoc] = useState('<div></div>');
 
   const sourceRef = useRef();
   const targetRef = useRef();
+  const propsRef = useRef();
   const previewRef = useRef();
 
   const sortableOption = {
@@ -101,6 +102,22 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       },
     });
     Sortable.create(targetRef.current, { ...sortableOption });
+    targetRef.current.addEventListener('click', (e) => {
+      console.log(e.target);
+      const isMyComponent = get(e.target, 'attributes.data-item');
+      // const isMyComponent = e.target.classList.contains('inline-block')|| e.target.classList.contains('block')
+      if (isMyComponent) {
+        if (e.target.classList.contains('item-active')) {
+          e.target.classList.remove('item-active');
+        } else {
+          e.target.classList.add('item-active');
+        }
+        // 获取属性
+        const itemStr = get(e.target, 'attributes.data-item.nodeValue');
+        const itemData = JSON.parse(itemStr);
+        dispatch({ type: 'sortable/save', payload: { selectedComponentData: itemData } });
+      }
+    });
   }, []);
 
   /**
@@ -124,6 +141,9 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           'Descriptions',
           'Statistic',
           'Tabs',
+          'Modal',
+          'Result',
+          'Skeleton',
         ].includes(dataItem.name)
       ) {
         element.setAttribute('data-item', itemStr);
@@ -213,6 +233,18 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
     if (bodyElements.length) {
       bodyElements.forEach((item) => Sortable.create(item, { ...sortableOption }));
     }
+
+    // Drawer组件
+    const drawerBodyElements = targetElement.querySelectorAll('.ant-drawer-body');
+    if (drawerBodyElements.length) {
+      drawerBodyElements.forEach((item) => Sortable.create(item, { ...sortableOption }));
+    }
+
+    // Modal组件
+    const modalBodyElements = targetElement.querySelectorAll('.ant-modal-body');
+    if (modalBodyElements.length) {
+      modalBodyElements.forEach((item) => Sortable.create(item, { ...sortableOption }));
+    }
   };
 
   // 生成拖拽进来的组件
@@ -231,6 +263,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       'Collapse',
       'Descriptions',
       'Tabs',
+      'Popconfirm',
     ];
     if (specialComponents.includes(itemData.name)) {
       loopTreeDataAny(
@@ -241,13 +274,19 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
       return json2react(itemData);
     }
 
+    // 需要展示默认属性的组件
+    const showDefaultPropsComponents = ['Modal'];
+    let defaultProps = {};
+    if (showDefaultPropsComponents.includes(itemData.name)) {
+      defaultProps = itemData.defaultProps;
+    }
     const componentName = allComponents[itemData.name]
       ? allComponents[itemData.name]
       : itemData.name;
     // 创建组件时defaultProps和props分开，props是真实作用于组件上的属性
     return React.createElement(
       componentName,
-      { ...itemData.props, ['data-item']: itemStr },
+      { ...defaultProps, ...itemData.props, ['data-item']: itemStr },
       itemData.children,
     );
   };
@@ -413,7 +452,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
   };
 
   console.log(domStack.join(''));
-
+  console.log('selectedComponentData', selectedComponentData);
   /**
    * json转jsx
    */
@@ -452,6 +491,7 @@ const Index = ({ dispatch, codeTree, componentList, domStack }) => {
           })}
         </div>
         <div ref={targetRef} id="container" className={styles.container}></div>
+        <div ref={propsRef} id="props" className={styles.propsContainer}></div>
       </div>
       <div ref={previewRef} className={styles.preview}></div>
       {/* <iframe className={styles.iframe} frameBorder={0} srcDoc={domStack.join('')}></iframe> */}
@@ -473,4 +513,5 @@ export default connect(({ sortable }) => ({
   codeTree: sortable.codeTree,
   componentList: sortable.componentList,
   domStack: sortable.domStack,
+  selectedComponentData: sortable.selectedComponentData,
 }))(Index);

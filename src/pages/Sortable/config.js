@@ -38,6 +38,10 @@ import {
   Tabs,
   Tag,
   Timeline,
+  Alert,
+  Progress,
+  Skeleton,
+  Spin,
 } from 'antd';
 
 import Dropdown from './components/Dropdown';
@@ -46,8 +50,13 @@ import Transfer from './components/Transfer';
 import List from './components/List';
 import Popover from './components/Popover';
 import Tooltip from './components/Tooltip';
+import Popconfirm from './components/Popconfirm';
 import Table from './components/Table';
 import Tree from './components/Tree';
+import Drawer from './components/Drawer';
+import Modal from './components/Modal';
+import Result from './components/Result';
+
 import React from 'react';
 
 const FormItem = Form.Item;
@@ -128,6 +137,14 @@ const allComponents = {
   TimelineItem,
   Tooltip,
   Tree,
+  Alert,
+  Drawer,
+  Modal,
+  Popconfirm,
+  Progress,
+  Result,
+  Skeleton,
+  Spin,
 };
 
 const columns = [
@@ -738,6 +755,27 @@ export default [
     ],
   },
   {
+    name: 'Popconfirm',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: {
+      title: 'Popconfirm?',
+      trigger: 'click',
+      getPopupContainer: `(e)=>e.parentNode`,
+      okText: '确定',
+      cancelText: '取消',
+    },
+    children: [
+      {
+        name: 'Button',
+        componentType: 'text',
+        defaultProps: { className: 'inline-block' },
+        props: {},
+        children: 'Popconfirm',
+      },
+    ],
+  },
+  {
     name: 'Statistic',
     componentType: 'text',
     defaultProps: { className: 'block' },
@@ -814,6 +852,74 @@ export default [
       }`,
       treeData,
     },
+  },
+  {
+    name: 'Alert',
+    componentType: 'text',
+    defaultProps: { className: 'block' },
+    props: { message: 'Success Text', type: 'success' },
+  },
+  {
+    name: 'Drawer',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { className: 'block' },
+    props: { title: 'Basic Drawer', placement: 'right', visible: true, getContainer: false },
+    children: [
+      {
+        name: 'p',
+        componentType: 'container',
+        defaultProps: { className: 'block' },
+        props: {},
+        children: 'text',
+      },
+    ],
+  },
+  {
+    name: 'Modal',
+    componentType: 'container',
+    disableDrag: true,
+    defaultProps: { wrapClassName: 'ant-modal-root-rewrite', mask: false },
+    props: { title: 'Basic Modal', visible: true, getContainer: false },
+    children: [],
+  },
+  {
+    name: 'Progress',
+    componentType: 'text',
+    defaultProps: {},
+    props: { percent: 30 },
+  },
+  {
+    name: 'Result',
+    componentType: 'text',
+    defaultProps: {},
+    props: {
+      status: 'success',
+      title: 'Successfully Purchased Cloud Server ECS!',
+      subTitle:
+        'Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.',
+      extra: [
+        {
+          name: 'Button',
+          componentType: 'text',
+          defaultProps: { className: 'inline-block' },
+          props: {},
+          children: 'Button',
+        },
+      ],
+    },
+  },
+  {
+    name: 'Skeleton',
+    componentType: 'text',
+    defaultProps: {},
+    props: { avatar: true, paragraph: { rows: 2 } },
+  },
+  {
+    name: 'Spin',
+    componentType: 'text',
+    defaultProps: { className: 'inline-block' },
+    props: { size: 'middle' },
   },
 ];
 

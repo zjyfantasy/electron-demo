@@ -9,6 +9,7 @@ export default {
     codeTree: [],
     domStack: [],
     componentList: config,
+    selectedComponentData: {},
   },
   subscriptions: {},
   effects: {},
