@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'umi';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Card } from 'antd';
+import { Card, Row, Col, Select } from 'antd';
 import { get, cloneDeep, isEmpty } from 'lodash';
 import Sortable from 'sortablejs';
 import { v4 as uuid } from 'uuid';
@@ -477,7 +477,9 @@ const Index = ({ dispatch, codeTree, componentList, domStack, selectedComponentD
     console.log(jsx);
     ReactDOM.render(jsx, previewRef.current);
   };
-
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
   return (
     <Card className={styles.card}>
       <div className={styles.wrap}>
@@ -491,7 +493,23 @@ const Index = ({ dispatch, codeTree, componentList, domStack, selectedComponentD
           })}
         </div>
         <div ref={targetRef} id="container" className={styles.container}></div>
-        <div ref={propsRef} id="props" className={styles.propsContainer}></div>
+        <div ref={propsRef} id="props" className={styles.propsContainer}>
+          <div>
+            <Row>
+              <Col span={6}>name:</Col>
+              <Col>{selectedComponentData.name}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>type:</Col>
+              <Col>
+                <Select onChange={handleChange}>
+                  <Select.Option value="primary">primary</Select.Option>
+                  <Select.Option value="ghost">ghost</Select.Option>
+                </Select>
+              </Col>
+            </Row>
+          </div>
+        </div>
       </div>
       <div ref={previewRef} className={styles.preview}></div>
       {/* <iframe className={styles.iframe} frameBorder={0} srcDoc={domStack.join('')}></iframe> */}

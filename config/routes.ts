@@ -30,6 +30,11 @@
         component: './Sortable',
       },
       {
+        path: '/sortableReact',
+        name: 'sortableReact',
+        component: './react-sortable-tree',
+      },
+      {
         path: '/generator',
         name: 'generator',
         component: './Generator',
